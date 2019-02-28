@@ -1,0 +1,7 @@
+{
+  "crm-user": "training_read_only@sesam.database.windows.net",  
+  "azure-person:original-or-hardcoded": "hardcoded",
+  "crm-person:original-or-hardcoded": "hardcoded",
+  "firebase-person:original-or-hardcoded": "hardcoded",
+  "node-env": "test"
+}
