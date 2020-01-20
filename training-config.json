@@ -5,7 +5,7 @@
     "namespaced_identifiers": true
   },
   {
-    "_id": "azure-person",
+    "_id": "hr-person",
     "type": "pipe",
     "source": {
       "type": "embedded",
@@ -158,7 +158,7 @@
           ["copy", "*"],
           ["comment", "below will add a namespaced identifier and 'rdf:type' for easy filtering later"],
           ["add", "rdf:type",
-            ["ni", "azure", "person"]
+            ["ni", "hr", "person"]
           ]
         ]
       }
@@ -300,7 +300,7 @@
         "default": [
           ["copy", "*"],
           ["comment", "below will add a namespaced identifier and 'rdf:type' for easy filtering later"],
-          ["make-ni", "azure-person", "SSN"],
+          ["make-ni", "hr-person", "SSN"],
           ["add", "rdf:type",
             ["ni", "crm", "person"]
           ]
@@ -442,7 +442,7 @@
     }
   },
   {
-    "_id": "firebase-person",
+    "_id": "erp-person",
     "type": "pipe",
     "source": {
       "type": "embedded",
@@ -594,7 +594,7 @@
         "default": [
           ["copy", "*"],
           ["add", "rdf:type",
-            ["ni", "firebase", "person"]
+            ["ni", "erp", "person"]
           ],
           ["add", "SSN",
             ["ni-id",
@@ -602,7 +602,7 @@
             ]
           ],
           ["add", "SSN-ni",
-            ["ni", "azure-person", "_T.SSN"]
+            ["ni", "hr-person", "_T.SSN"]
           ]
         ]
       }
@@ -629,10 +629,10 @@
     "type": "pipe",
     "source": {
       "type": "merge",
-      "datasets": ["crm-person cp", "azure-person ap", "firebase-person fp", "salesforce-userprofile sup", "salesforce-consent sc"],
+      "datasets": ["crm-person cp", "hr"-person hp", "erp-person ep", "salesforce-userprofile sup", "salesforce-consent sc"],
       "equality": [
-        ["eq", "cp.SSN-ni", "ap.$ids"],
-        ["eq", "fp.SSN-ni", "ap.$ids"],
+        ["eq", "cp.SSN-ni", "hp.$ids"],
+        ["eq", "ep.SSN-ni", "hp.$ids"],
         ["eq", "cp.Username", "sup.Username"],
         ["eq", "sup.Username", "sc.Username"]
       ],
@@ -644,29 +644,29 @@
       "rules": {
         "default": [
           ["copy", "*"],
-          ["comment", "Below code will first check for values in azure-person dataset ,if it is null then it goes to crm-person dataset and so on.basically we prioritize the order on most trusted values."],
+          ["comment", "Below code will first check for values in hr-person dataset ,if it is null then it goes to crm-person dataset and so on.basically we prioritize the order on most trusted values."],
           ["if",
             ["intersects",
-              ["list", "~:crm:person", "~:azure:person", "~:firebase:person"], "_S.rdf:type"],
+              ["list", "~:crm:person", "~:hr:person", "~:erp-person:person"], "_S.rdf:type"],
             [
               ["add", "zipcode",
                 ["coalesce",
-                  ["list", "_S.azure-person:ZipCode", "_S.crm-person:PostalCode", "_S.firebase-person:ZipCode"]
+                  ["list", "_S.hr-person:ZipCode", "_S.crm-person:PostalCode", "_S.erp-person:ZipCode"]
                 ]
               ],
               ["add", "firstname",
                 ["coalesce",
-                  ["list", "_S.azure-person:GivenName", "_S.crm-person:FirstName", "_S.firebase-person:FirstName"]
+                  ["list", "_S.hr-person:GivenName", "_S.crm-person:FirstName", "_S.erp-person:FirstName"]
                 ]
               ],
               ["add", "lastname",
                 ["coalesce",
-                  ["list", "_S.azure-person:Surname", "_S.crm-person:LastName", "_S.firebase-person:LastName"]
+                  ["list", "_S.hr-person:Surname", "_S.crm-person:LastName", "_S.erp-person:LastName"]
                 ]
               ],
               ["add", "email",
                 ["coalesce",
-                  ["list", "_S.azure-person:EmailAddress", "_S.crm-person:EmailAddress", "_S.firebase-person:EmailAddress"]
+                  ["list", "_S.hr-person:EmailAddress", "_S.crm-person:EmailAddress", "_S.erp-person:EmailAddress"]
                 ]
               ],
               ["comment", "checks if _S.crm-person:MiddleInitial exists, if so it concats it in to the fullname, else it ignores MiddleInitial"],
@@ -701,7 +701,7 @@
         "default": [
           ["filter",
             ["intersects",
-              ["list", "~:crm:person", "~:azure:person", "~:firebase:person"], "_S.rdf:type"]
+              ["list", "~:crm:person", "~:hr:person", "~:erp:person"], "_S.rdf:type"]
           ],
           ["comment", "hop to global-location and mold data to fit database"],
           ["merge",
