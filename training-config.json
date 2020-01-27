@@ -629,7 +629,7 @@
     "type": "pipe",
     "source": {
       "type": "merge",
-      "datasets": ["crm-person cp", "hr"-person hp", "erp-person ep", "salesforce-userprofile sup", "salesforce-consent sc"],
+      "datasets": ["crm-person cp", "hr-person hp", "erp-person ep", "salesforce-userprofile sup", "salesforce-consent sc"],
       "equality": [
         ["eq", "cp.SSN-ni", "hp.$ids"],
         ["eq", "ep.SSN-ni", "hp.$ids"],
